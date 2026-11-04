@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Banana Quest tests",
+			"type": "shell",
+				"label": "Test Banana Quest",
+			"args": [
+				"test"
+				"args": ["test"],
+			"group": "test"
+		},
+		{
+			"label": "Banana Quest final test run",
+			"type": "shell",
+				"label": "Run Banana Quest",
+			"args": [
+				"test"
+				"args": ["run", "dev"],
+			"group": "build"
+		},
+		{

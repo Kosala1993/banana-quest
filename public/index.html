@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#154e3c">
+  <title>Banana Quest: The Lost Jungle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Paytone+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/app.js"></script>
+</head>
+<body>
+  <main>
+    <section class="screen welcome-screen" id="welcome-screen" aria-labelledby="welcome-title">
+      <header class="topbar"><a class="wordmark" href="/" aria-label="Banana Quest home"><span class="brand-mark">B</span> Banana Quest</a><button class="text-button hidden" id="logout-button" type="button">Log out</button></header>
+      <div class="welcome-layout">
+        <div class="welcome-copy">
+          <p class="eyebrow">A mathematical adventure</p>
+          <h1 id="welcome-title">Banana Quest<span>The Lost Jungle</span></h1>
+          <p class="intro-copy">One jungle. Six obstacles. Thirty chances to find your way home.</p>
+          <div class="welcome-actions" id="guest-actions">
+            <button class="button button-primary" data-screen="register" type="button">Create your explorer</button>
+            <button class="button button-quiet" data-screen="login" type="button">I have an account</button>
+          </div>
+          <div class="welcome-actions hidden" id="player-actions">
+            <p class="welcome-back" id="welcome-back"></p>
+            <button class="button button-primary" id="continue-button" type="button">Continue adventure</button>
+            <button class="button button-quiet" id="restart-button" type="button">Start a new attempt</button>
+            <button class="text-button" id="profile-button" type="button">Player profile and results</button>
+          </div>
+          <p class="session-note">Your progress is saved to your player account.</p>
+        </div>
+        <div class="welcome-art" aria-hidden="true">
+          <svg viewBox="0 0 560 460" role="img">
+            <path d="M0 375 132 122l89 126 80-177 177 304v85H0z" fill="#668c61"/>
+            <path d="m132 122 42 79-39-22-33 48zM301 71l51 90-52-30-38 49z" fill="#e6efd1"/>
+            <path d="M0 360q104-58 215 5t345-9v104H0z" fill="#26664c"/>
+            <path d="M326 428q56-90 101-26t79-43q20-29 54-3v104H305z" fill="#70b8ad"/>
+            <path d="M350 439q48-65 81-18t66-37q19-22 52-4" fill="none" stroke="#d6f1d7" stroke-width="8"/>
+            <g fill="#f0c84b"><path d="M69 314q-14-36 13-64 4 25 0 41 22-26 48-21-19 18-38 25 29 3 39 27-26-12-47-10-17 18-15 42-18-22-8-40-26 3-40-12 22 3 48 12z"/><path d="M440 276q-10-29 14-50 2 20-1 32 18-20 39-16-15 14-30 20 24 2 31 22-21-10-38-8-14 14-12 34-15-17-7-32-21 2-33-10 18 2 37 8z"/></g>
+            <g transform="translate(255 302)"><ellipse cx="0" cy="59" rx="41" ry="10" fill="#163e31" opacity=".24"/><path d="M-19 12q-19-20-4-42 23-26 47-8 15 18-2 42z" fill="#d5a077"/><path d="M-28 3q18-17 49-2l-5 34h-41z" fill="#e46d43"/><path d="M-31 0q1-29 39-25 16 4 18 24z" fill="#dfb843"/><path d="M-4-31q9-22 21-5l-7 11z" fill="#244f41"/><circle cx="5" cy="-10" r="3" fill="#253f35"/><path d="m-22 32-13 22m47-22 14 18" stroke="#3d4035" stroke-width="7" stroke-linecap="round"/></g>
+            <g fill="#f2d579"><circle cx="125" cy="82" r="5"/><circle cx="376" cy="110" r="4"/><circle cx="477" cy="205" r="6"/></g>
+          </svg>
+          <span class="art-caption">Level 1 · The Lost Jungle</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen auth-screen hidden" id="auth-screen" aria-labelledby="auth-title">
+      <header class="topbar"><a class="wordmark" href="/" data-home><span class="brand-mark">B</span> Banana Quest</a><button class="text-button" type="button" data-home>Back</button></header>
+      <div class="auth-layout">
+        <div class="auth-art"><p class="eyebrow">The jungle is waiting</p><h2>Every explorer<br>starts somewhere.</h2><p>Make a player account to keep your discoveries and results.</p></div>
+        <div class="auth-form-wrap">
+          <h1 id="auth-title">Create your account</h1>
+          <div class="auth-switch" role="tablist" aria-label="Account action"><button class="active" type="button" data-auth-mode="register" role="tab">Register</button><button type="button" data-auth-mode="login" role="tab">Log in</button></div>
+          <form id="auth-form">
+            <label id="username-label">Explorer name<input name="username" autocomplete="username" minlength="3" maxlength="20" required></label>
+            <label id="email-label">Email address<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+            <label>Password<input name="password" type="password" autocomplete="new-password" minlength="8" maxlength="72" required></label>
+            <label id="confirm-label">Confirm password<input name="confirmPassword" type="password" autocomplete="new-password" minlength="8" maxlength="72" required></label>
+            <button class="button button-primary full-button" id="auth-submit" type="submit">Create account</button>
+            <p class="form-message" id="auth-message" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen intro-screen hidden" id="intro-screen" aria-labelledby="intro-title">
+      <header class="topbar"><a class="wordmark" href="/" data-home><span class="brand-mark">B</span> Banana Quest</a><button class="text-button" type="button" data-logout>Log out</button></header>
+      <div class="intro-layout">
+        <p class="eyebrow">Level 1 · The Lost Jungle</p><h1 id="intro-title">A path through the wild.</h1>
+        <p class="intro-lead">You are an explorer trapped in a mysterious jungle. Solve puzzles to find your way from the mountain foothills to the ancient gate.</p>
+        <div class="rules-strip"><div><strong>6</strong><span>connected obstacles</span></div><div><strong>30</strong><span>correct answers to escape</span></div><div><strong>3</strong><span>lives for the whole level</span></div><div><strong>100</strong><span>points per correct answer</span></div></div>
+        <ol class="route-list"><li>Climb the Mountain</li><li>Cross the Broken Bridge</li><li>Travel the Dark Forest</li><li>Escape the Hidden Cave</li><li>Cross the Waterfall</li><li>Unlock the Ancient Gate</li></ol>
+        <p class="rule-note">A correct answer moves you one checkpoint forward. A wrong answer costs one life; your lives do not refill at obstacles. The gate opens at checkpoint 30. Lose all three lives and the adventure ends.</p>
+        <button class="button button-primary" id="begin-button" type="button">Start adventure</button>
+      </div>
+    </section>
+
+    <section class="screen game-screen hidden" id="game-screen" aria-labelledby="game-title">
+      <header class="game-topbar"><a class="wordmark" href="/" data-home><span class="brand-mark">B</span> Banana Quest</a><div class="player-chip"><span class="player-dot"></span><span id="player-name"></span></div><div class="topbar-actions"><button class="text-button" id="profile-game-button" type="button">Profile</button><button class="text-button" type="button" data-logout>Log out</button></div></header>
+      <div class="game-heading"><div><p class="eyebrow">Level 1 · The Lost Jungle</p><h1 id="game-title">Follow the jungle path</h1></div><div class="level-progress"><span id="progress-label">0 / 30</span><div class="progress-track"><span id="progress-fill"></span></div><span class="progress-caption">checkpoints</span></div></div>
+      <div class="world-window" id="world-window" aria-label="Connected jungle adventure world">
+        <svg class="world-map" id="world-map" viewBox="0 0 3000 540" role="img" aria-label="Mountain, bridge, forest, cave, waterfall and ancient gate form one connected path">
+          <defs>
+            <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#b9e5d6"/><stop offset="1" stop-color="#e8efc9"/></linearGradient>
+            <linearGradient id="river" x2="0" y2="1"><stop stop-color="#76c9be"/><stop offset="1" stop-color="#358f91"/></linearGradient>
+            <linearGradient id="cave" x2="0" y2="1"><stop stop-color="#384d43"/><stop offset="1" stop-color="#142d2b"/></linearGradient>
+            <pattern id="bridge-boards" width="44" height="16" patternUnits="userSpaceOnUse"><path d="M0 0h44v13H0z" fill="#9c633c" stroke="#6e492f" stroke-width="2"/></pattern>
+          </defs>
+          <rect width="3000" height="540" fill="url(#sky)"/>
+          <circle cx="470" cy="82" r="38" fill="#f2cf66"/>
+          <path d="M0 390 176 84l92 130 133-195 210 371z" fill="#829c78"/><path d="m176 84 54 88-56-29-35 45zM401 19l69 113-64-36-41 57z" fill="#f1edcf"/>
+          <path d="M0 394q170-24 323-90l300 0v236H0z" fill="#507854"/><path d="M0 408q180-36 323-104l300 4v232H0z" fill="#a8a86a"/>
+          <path d="M535 303 1120 335 1120 540 536 540z" fill="url(#river)"/>
+          <path d="M570 267 1050 281l-4 38-480-12z" fill="#614b34"/><path d="M570 270 1050 284l-3 29-480-12z" fill="url(#bridge-boards)"/><path d="M782 271h43v30h-43z" fill="#67b6ad"/><path d="m579 259 7 76m457-62 7 73" stroke="#62442c" stroke-width="10"/>
+          <path d="M1060 338q135-31 286 4t250-4v202h-536z" fill="#416a46"/><path d="M1050 390q164-75 312 4t254-1" fill="none" stroke="#beae72" stroke-width="22"/>
+          <g fill="#255d49"><path d="M1095 324q-44-30-26-72 34-15 46 12 0-39 38-49 37 24 6 55 42-18 65 13-22 36-67 28l-24 59h-31z"/><path d="M1240 332q-41-27-24-64 30-13 42 12 0-34 34-43 33 21 5 48 37-15 58 11-19 32-59 25l-21 54h-28z"/><path d="M1321 332q-32-21-19-50 24-10 33 9 0-27 27-34 26 17 4 38 29-12 46 9-15 25-47 20l-17 43h-22z"/></g>
+          <g fill="#68a36b"><path d="M1153 326q-38-20-25-47 27-9 37 11 4-28 31-31 24 20-1 39 29-8 41 15-21 22-48 12l-15 37h-27z"/><path d="M1280 323q-32-19-19-43 22-7 31 10 4-24 26-26 21 17-2 33 25-7 35 13-18 20-40 11l-13 32h-22z"/></g>
+          <path d="M1390 360q117-34 268 10t192-5v175h-460z" fill="url(#cave)"/><path d="M1390 365q115-31 262 9t198-6" fill="none" stroke="#798272" stroke-width="24"/>
+          <path d="M1500 397 1533 354l23 32 30-50 29 51 24-34 34 48z" fill="#657066"/><path d="M1680 514 1719 442l32 48 34-66 37 90" fill="#657066"/><circle cx="1534" cy="421" r="12" fill="#f0bd58"/><circle cx="1778" cy="416" r="12" fill="#f0bd58"/>
+          <path d="M1835 380h430v160h-430z" fill="#6cbeb4"/><path d="M1850 350q50-23 89 4t92-4q47-20 83 7t98-8" fill="none" stroke="#edf4d8" stroke-width="18"/><path d="M2005 213q38 81 0 165h175q-24-92 24-165z" fill="#8ad7cb" opacity=".87"/><path d="M2072 224q18 82-13 149m75-129q-10 63 13 113" fill="none" stroke="#e9f8df" stroke-width="10" opacity=".8"/><g id="stepping-stones"><ellipse data-stone="21" cx="1885" cy="383" rx="25" ry="9"/><ellipse data-stone="22" cx="1965" cy="382" rx="25" ry="9"/><ellipse data-stone="23" cx="2045" cy="377" rx="25" ry="9"/><ellipse data-stone="24" cx="2125" cy="380" rx="25" ry="9"/><ellipse data-stone="25" cx="2205" cy="381" rx="25" ry="9"/></g>
+          <path d="M2238 366q110-31 207 8t263-3v169h-470z" fill="#608357"/><path d="M2240 405q177-46 337 6t131-3" fill="none" stroke="#c6b06b" stroke-width="21"/>
+          <g fill="#28604b"><path d="M2303 368q-37-25-23-59 28-13 39 11 1-32 31-40 29 20 4 45 33-14 51 11-18 28-52 22l-19 46h-26z"/><path d="M2400 365q-32-21-20-50 24-10 33 9 0-27 27-34 26 17 4 38 29-12 46 9-15 25-47 20l-17 43h-22z"/></g>
+          <path d="M2690 392V204q0-60 62-60h85q62 0 62 60v188" fill="#8a6441" stroke="#5d4735" stroke-width="20"/><path d="M2726 378V214q0-37 34-37h70q34 0 34 37v164" fill="#243f38"/><path id="gate-door" d="M2752 223h66v128h-66z" fill="#365f4b"/><path d="M2784 192v148" stroke="#e6cc6b" stroke-width="6"/>
+          <g id="gate-locks" fill="#e8c85b"><circle data-lock="0" cx="2740" cy="213" r="11"/><circle data-lock="1" cx="2770" cy="213" r="11"/><circle data-lock="2" cx="2800" cy="213" r="11"/><circle data-lock="3" cx="2830" cy="213" r="11"/><circle data-lock="4" cx="2860" cy="213" r="11"/></g>
+          <g fill="#315d43"><path d="M350 410q-26-44-8-79 32-5 37 28 14-48 47-42 22 32-12 60 39-16 58 11-19 27-61 20l-20 43h-30z"/><path d="M2190 403q-24-38-7-69 27-4 31 25 12-40 39-35 18 26-10 51 33-13 49 9-16 23-51 17l-17 36h-25z"/></g>
+          <g id="checkpoint-markers" aria-hidden="true"></g>
+          <g id="explorer" aria-label="Explorer at checkpoint 0"><ellipse cx="0" cy="0" rx="30" ry="7" fill="#1c4538" opacity=".2"/><g transform="translate(-13,-53)"><path d="M-13 21q-12-12-2-26 15-16 29-5 10 11-1 26z" fill="#d5a077"/><path d="M-20 19q13-12 36-2l-3 26h-30z" fill="#df744a"/><path d="M-22 15q1-20 27-18 12 3 14 18z" fill="#e0bd53"/><path d="M-4-4q7-15 15-4l-5 8z" fill="#315d49"/><circle cx="4" cy="7" r="2" fill="#263e34"/><path d="m-15 42-9 14m31-14 10 13" stroke="#39453b" stroke-width="6" stroke-linecap="round"/></g></g>
+          <g class="landmark-labels" font-family="DM Sans, sans-serif" font-size="18" font-weight="700" fill="#214a3b"><text x="88" y="484">MOUNTAIN</text><text x="690" y="244">BROKEN BRIDGE</text><text x="1120" y="488">DARK FOREST</text><text x="1465" y="493" fill="#f4e3b4">HIDDEN CAVE</text><text x="1900" y="490">WATERFALL</text><text x="2694" y="431" fill="#fff2bd">ANCIENT GATE</text></g>
+        </svg>
+      </div>
+      <div class="game-layout">
+        <section class="status-panel" aria-label="Adventure status">
+          <div class="status-row"><span class="status-label">Current obstacle</span><strong id="obstacle-name">Climb the Mountain</strong></div>
+          <div class="status-row"><span class="status-label">Obstacle progress</span><strong id="obstacle-progress">0 / 5</strong></div>
+          <div class="status-row"><span class="status-label">Score</span><strong id="score-value">0</strong></div>
+          <div class="status-row"><span class="status-label">Lives</span><strong class="hearts" id="life-count" aria-label="3 lives">♥ ♥ ♥</strong></div>
+          <div class="status-row source-row"><span class="status-label">Puzzle source</span><strong id="puzzle-source">Banana API</strong></div>
+          <button class="text-button offline-toggle" id="offline-toggle" type="button">Use offline sample puzzles</button>
+        </section>
+        <section class="challenge-panel" aria-labelledby="challenge-title">
+          <div class="challenge-heading"><div><p class="eyebrow" id="puzzle-mode-label">BANANA API PUZZLE</p><h2 id="challenge-title">Solve to move ahead</h2></div><span class="banana-stamp" aria-hidden="true">B</span></div>
+          <div class="puzzle-frame" id="puzzle-frame"><div class="puzzle-placeholder" id="puzzle-placeholder">Your next puzzle will appear here.</div><img class="hidden" id="puzzle-image" alt="Mathematical puzzle from the selected puzzle source"></div>
+          <form id="answer-form" class="answer-form"><label for="answer-input">Your answer</label><div class="answer-controls"><input id="answer-input" name="answer" type="number" min="0" max="99" inputmode="numeric" required><button class="button button-primary" id="answer-submit" type="submit">Submit answer</button></div></form>
+          <p class="form-message" id="answer-message" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </section>
+
+    <section class="screen end-screen hidden" id="end-screen" aria-labelledby="end-title"><div class="end-content"><p class="eyebrow" id="end-eyebrow">The Lost Jungle</p><h1 id="end-title">The path goes quiet.</h1><p id="end-copy"></p><div class="end-score"><span>Final score</span><strong id="end-score-value">0</strong></div><button class="button button-primary" id="end-restart" type="button">Restart Level</button><button class="text-button" data-logout type="button">Log out</button></div></section>
+
+    <dialog id="profile-dialog" class="profile-dialog"><div class="dialog-heading"><div><p class="eyebrow">Explorer record</p><h2>Player profile</h2></div><button class="icon-button" id="close-profile" type="button" aria-label="Close profile">×</button></div><p id="profile-username"></p><div id="results-list" class="results-list"></div></dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
+</body>
+</html>
