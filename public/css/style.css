@@ -27,6 +27,9 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid 
 .screen { min-height: 100vh; animation: arrive .45s ease both; }
 @keyframes arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .topbar, .game-topbar { height: 76px; padding: 0 clamp(20px, 5vw, 76px); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(32,60,50,.09); }
+.topbar-controls { display: flex; align-items: center; gap: 8px; }
+.audio-toggle { border-radius: 999px; padding: 8px 12px; background: rgba(24,77,61,.06); transition: background .18s ease, transform .18s ease; }
+.audio-toggle:hover { background: rgba(24,77,61,.10); transform: translateY(-1px); }
 .wordmark { display: inline-flex; gap: 10px; align-items: center; text-decoration: none; color: var(--forest); font-weight: 700; }
 .brand-mark { width: 31px; height: 31px; display: inline-grid; place-items: center; color: var(--forest-deep); background: var(--sun); border-radius: 50% 50% 44% 48%; font: 20px "Paytone One", sans-serif; }
 .text-button { color: var(--forest); border: 0; background: transparent; padding: 10px 4px; font-size: 14px; font-weight: 700; text-underline-offset: 4px; }

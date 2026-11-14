@@ -15,7 +15,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 
 function sendError(response, status, message) { return response.status(status).json({ error: message }); }
 
-export function createApp({ db = createDatabase(), getPuzzle = createBananaService(), sessionSecret = process.env.SESSION_SECRET || 'local-development-secret-change-before-deployment' } = {}) {
+export function createApp({ db = createDatabase(), getPuzzle = createBananaService(), sessionSecret = process.env.SESSION_SECRET } = {}) {
   if (process.env.NODE_ENV === 'production' && (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32)) {
     throw new Error('Production requires a SESSION_SECRET with at least 32 characters.');
   }

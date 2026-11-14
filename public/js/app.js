@@ -1,13 +1,34 @@
+import { audioManager } from './audioManager.js';
 import { positionExplorer, showCheckpointMarkers } from './world.js';
 
 const screens = ['welcome-screen', 'auth-screen', 'intro-screen', 'game-screen', 'end-screen'];
 const obstacles = ['Climb the Mountain', 'Cross the Broken Bridge', 'Dark Forest', 'Hidden Cave', 'Waterfall Crossing', 'Ancient Gate'];
+const obstacleAmbience = ['mountain', 'bridge', 'forest', 'cave', 'waterfall', 'gate'];
+const obstacleMovement = ['mountain', 'bridge', 'forest', 'cave', 'waterfall', 'gate'];
 let csrfToken = '';
 let player = null;
 let currentAttempt = null;
 let puzzleId = null;
 let offlineMode = false;
 let authMode = 'register';
+
+function syncAudioToggle() {
+  const toggles = document.querySelectorAll('.audio-toggle');
+  toggles.forEach(toggle => {
+    toggle.textContent = audioManager.getSoundEnabled ? 'Sound: on' : 'Sound: off';
+    toggle.setAttribute('aria-pressed', String(audioManager.getSoundEnabled()));
+  });
+}
+
+function ensureAudioReady() {
+  audioManager.initializeAudio();
+}
+
+function setSceneAmbience(attempt) {
+  if (!attempt || attempt.status !== 'active') return;
+  const ambienceName = obstacleAmbience[Math.min(obstacleAmbience.length - 1, Math.max(0, attempt.obstacleIndex ?? 0))] || 'mountain';
+  audioManager.playAmbience(ambienceName);
+}
 
 async function api(url, options = {}) {
   const headers = { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.method && options.method !== 'GET' ? { 'X-CSRF-Token': csrfToken } : {}), ...options.headers };
@@ -31,6 +52,8 @@ function showToast(message) {
 
 function setAuthMode(mode) {
   authMode = mode;
+  ensureAudioReady();
+  audioManager.playSound('ui');
   const registering = mode === 'register';
   document.querySelector('#auth-title').textContent = registering ? 'Create your account' : 'Welcome back, explorer';
   document.querySelector('#auth-submit').textContent = registering ? 'Create account' : 'Log in';
@@ -55,6 +78,7 @@ function renderState(attempt) {
   document.querySelector('#progress-fill').style.width = `${attempt.checkpoint / 30 * 100}%`;
   document.querySelector('#puzzle-source').textContent = offlineMode ? 'Offline sample' : 'Banana API';
   positionExplorer(attempt.checkpoint);
+  if (attempt.status === 'active') setSceneAmbience(attempt);
 }
 
 async function loadPuzzle() {
@@ -93,6 +117,12 @@ async function openGame(attempt) {
 
 function showEndScreen(attempt) {
   const won = attempt.status === 'completed';
+  audioManager.stopAmbience();
+  if (won) {
+    audioManager.playSound('victory');
+  } else {
+    audioManager.playSound('game-over');
+  }
   document.querySelector('#end-eyebrow').textContent = won ? 'Jungle Champion achievement earned' : `${attempt.obstacle} · Game Over`;
   document.querySelector('#end-title').textContent = won ? 'Level 1 completed!' : 'The jungle wins this round.';
   document.querySelector('#end-copy').textContent = won
@@ -112,9 +142,12 @@ async function refreshWelcome() {
   document.querySelector('#continue-button').textContent = data.attempt?.status === 'active' ? 'Continue adventure' : data.attempt ? 'View last result' : 'Read the story';
   document.querySelector('#restart-button').classList.toggle('hidden', !data.attempt);
   showScreen('welcome-screen');
+  audioManager.playAmbience('welcome');
 }
 
 async function showProfile() {
+  ensureAudioReady();
+  audioManager.playSound('ui');
   try {
     const data = await api('/api/profile');
     document.querySelector('#profile-username').textContent = `Explorer ${data.user.username}`;
@@ -129,12 +162,23 @@ async function submitAnswer(event) {
   if (!puzzleId) return;
   const button = document.querySelector('#answer-submit');
   const answerInput = document.querySelector('#answer-input');
+  const previousLives = currentAttempt?.lives ?? 3;
   button.disabled = true;
   document.querySelector('#answer-message').textContent = 'Checking your answer...';
   try {
     const result = await api('/api/game/answer', { method: 'POST', body: JSON.stringify({ puzzleId, answer: Number(answerInput.value) }) });
     puzzleId = null;
     renderState(result.attempt);
+    if (result.correct) {
+      audioManager.playSound('success');
+      const movementName = obstacleMovement[Math.min(obstacleMovement.length - 1, Math.max(0, result.attempt.obstacleIndex ?? 0))] || 'mountain';
+      audioManager.playSound(movementName);
+    } else {
+      audioManager.playSound('error');
+      if (result.attempt.lives < previousLives) {
+        audioManager.playSound('damage');
+      }
+    }
     document.querySelector('#answer-message').textContent = result.answerMessage;
     answerInput.value = '';
     await new Promise(resolve => window.setTimeout(resolve, result.attempt.status === 'completed' ? 1320 : 680));
@@ -148,12 +192,15 @@ async function submitAnswer(event) {
 }
 
 async function startNewAttempt() {
+  ensureAudioReady();
+  audioManager.playSound('start');
   const data = await api('/api/game/start', { method: 'POST', body: '{}' });
   await openGame(data.attempt);
 }
 
 async function handleAuthSubmit(event) {
   event.preventDefault();
+  ensureAudioReady();
   const form = event.currentTarget;
   const values = new FormData(form);
   const message = document.querySelector('#auth-message');
@@ -161,6 +208,7 @@ async function handleAuthSubmit(event) {
   message.textContent = '';
   if (authMode === 'register' && values.get('password') !== values.get('confirmPassword')) {
     message.textContent = 'Those passwords do not match.';
+    audioManager.playSound('error');
     return;
   }
   const submit = document.querySelector('#auth-submit');
@@ -171,21 +219,27 @@ async function handleAuthSubmit(event) {
     if (authMode === 'register') body.email = values.get('email');
     const result = await api(route, { method: 'POST', body: JSON.stringify(body) });
     if (authMode === 'register') {
+      audioManager.playSound('ui');
       setAuthMode('login');
       message.classList.add('success');
       message.textContent = result.message;
       document.querySelector('#auth-form [name="username"]').value = body.username;
     } else {
+      audioManager.playSound('start');
       csrfToken = result.csrfToken;
       player = result.user;
       await refreshWelcome();
       if (!currentAttempt) showScreen('intro-screen');
     }
-  } catch (error) { message.textContent = error.message; }
-  finally { submit.disabled = false; }
+  } catch (error) {
+    audioManager.playSound('error');
+    message.textContent = error.message;
+  } finally { submit.disabled = false; }
 }
 
 async function logout() {
+  ensureAudioReady();
+  audioManager.playSound('ui');
   try {
     await api('/api/auth/logout', { method: 'POST', body: '{}' });
     player = null;
@@ -198,29 +252,43 @@ async function logout() {
 }
 
 document.querySelectorAll('[data-screen]').forEach(button => button.addEventListener('click', () => {
+  ensureAudioReady();
+  audioManager.playAmbience('welcome');
+  audioManager.playSound('ui');
   setAuthMode(button.dataset.screen);
   showScreen('auth-screen');
 }));
-document.querySelectorAll('[data-auth-mode]').forEach(button => button.addEventListener('click', () => setAuthMode(button.dataset.authMode)));
-document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', event => { event.preventDefault(); showScreen(player ? 'welcome-screen' : 'welcome-screen'); }));
+document.querySelectorAll('[data-auth-mode]').forEach(button => button.addEventListener('click', () => {
+  ensureAudioReady();
+  audioManager.playSound('ui');
+  setAuthMode(button.dataset.authMode);
+}));
+document.querySelectorAll('[data-home]').forEach(button => button.addEventListener('click', event => { event.preventDefault(); ensureAudioReady(); audioManager.playSound('ui'); showScreen(player ? 'welcome-screen' : 'welcome-screen'); }));
 document.querySelectorAll('[data-logout]').forEach(button => button.addEventListener('click', logout));
 document.querySelector('#auth-form').addEventListener('submit', handleAuthSubmit);
 document.querySelector('#answer-form').addEventListener('submit', submitAnswer);
 document.querySelector('#begin-button').addEventListener('click', async () => {
+  ensureAudioReady();
   try { await startNewAttempt(); } catch (error) { showToast(error.message); }
 });
 document.querySelector('#continue-button').addEventListener('click', async () => {
+  ensureAudioReady();
+  audioManager.playSound('ui');
   if (!currentAttempt) return showScreen('intro-screen');
   if (currentAttempt.status === 'active') return openGame(currentAttempt);
   showEndScreen(currentAttempt);
 });
 document.querySelector('#restart-button').addEventListener('click', async () => {
+  ensureAudioReady();
   try { await startNewAttempt(); } catch (error) { showToast(error.message); }
 });
 document.querySelector('#end-restart').addEventListener('click', async () => {
+  ensureAudioReady();
   try { await startNewAttempt(); } catch (error) { showToast(error.message); }
 });
 document.querySelector('#offline-toggle').addEventListener('click', async event => {
+  ensureAudioReady();
+  audioManager.playSound('ui');
   const toggleButton = event.currentTarget;
   toggleButton.disabled = true;
   try {
@@ -238,9 +306,17 @@ document.querySelector('#offline-toggle').addEventListener('click', async event 
 });
 document.querySelector('#profile-button').addEventListener('click', showProfile);
 document.querySelector('#profile-game-button').addEventListener('click', showProfile);
-document.querySelector('#close-profile').addEventListener('click', () => document.querySelector('#profile-dialog').close());
+document.querySelector('#close-profile').addEventListener('click', () => { audioManager.playSound('ui'); document.querySelector('#profile-dialog').close(); });
+document.querySelectorAll('.audio-toggle').forEach(button => button.addEventListener('click', () => {
+  const enabled = !audioManager.getSoundEnabled();
+  audioManager.setSoundEnabled(enabled);
+  audioManager.setMusicEnabled(enabled);
+  syncAudioToggle();
+  audioManager.playSound('ui');
+}));
 
 async function initialize() {
+  ensureAudioReady();
   showCheckpointMarkers();
   try {
     const sessionData = await api('/api/session');
@@ -253,3 +329,4 @@ async function initialize() {
 }
 
 initialize();
+syncAudioToggle();

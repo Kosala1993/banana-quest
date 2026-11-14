@@ -14,7 +14,7 @@
 <body>
   <main>
     <section class="screen welcome-screen" id="welcome-screen" aria-labelledby="welcome-title">
-      <header class="topbar"><a class="wordmark" href="/" aria-label="Banana Quest home"><span class="brand-mark">B</span> Banana Quest</a><button class="text-button hidden" id="logout-button" type="button">Log out</button></header>
+      <header class="topbar"><a class="wordmark" href="/" aria-label="Banana Quest home"><span class="brand-mark">B</span> Banana Quest</a><div class="topbar-controls"><button class="text-button audio-toggle" type="button" aria-pressed="true">Sound: on</button><button class="text-button hidden" id="logout-button" type="button">Log out</button></div></header>
       <div class="welcome-layout">
         <div class="welcome-copy">
           <p class="eyebrow">A mathematical adventure</p>
@@ -80,7 +80,7 @@
     </section>
 
     <section class="screen game-screen hidden" id="game-screen" aria-labelledby="game-title">
-      <header class="game-topbar"><a class="wordmark" href="/" data-home><span class="brand-mark">B</span> Banana Quest</a><div class="player-chip"><span class="player-dot"></span><span id="player-name"></span></div><div class="topbar-actions"><button class="text-button" id="profile-game-button" type="button">Profile</button><button class="text-button" type="button" data-logout>Log out</button></div></header>
+      <header class="game-topbar"><a class="wordmark" href="/" data-home><span class="brand-mark">B</span> Banana Quest</a><div class="player-chip"><span class="player-dot"></span><span id="player-name"></span></div><div class="topbar-actions"><button class="text-button audio-toggle" type="button" aria-pressed="true">Sound: on</button><button class="text-button" id="profile-game-button" type="button">Profile</button><button class="text-button" type="button" data-logout>Log out</button></div></header>
       <div class="game-heading"><div><p class="eyebrow">Level 1 · The Lost Jungle</p><h1 id="game-title">Follow the jungle path</h1></div><div class="level-progress"><span id="progress-label">0 / 30</span><div class="progress-track"><span id="progress-fill"></span></div><span class="progress-caption">checkpoints</span></div></div>
       <div class="world-window" id="world-window" aria-label="Connected jungle adventure world">
         <svg class="world-map" id="world-map" viewBox="0 0 3000 540" role="img" aria-label="Mountain, bridge, forest, cave, waterfall and ancient gate form one connected path">

@@ -1,6 +1,15 @@
-export function createBananaService({ fetchImpl = fetch, endpoint = process.env.BANANA_API_URL || 'https://marcconrad.com/uob/banana/api.php' } = {}) {
+const DEFAULT_BANANA_API_URL = 'https://marcconrad.com/uob/banana/api.php';
+
+export function createBananaService({ fetchImpl = fetch, endpoint = process.env.BANANA_API_URL || DEFAULT_BANANA_API_URL } = {}) {
+  const bananaApiUrl = endpoint === 'API_URL' ? DEFAULT_BANANA_API_URL : endpoint;
+
   return async function getPuzzle() {
-    const response = await fetchImpl(endpoint, { signal: AbortSignal.timeout(8000) });
+    let response;
+    try {
+      response = await fetchImpl(bananaApiUrl, { signal: AbortSignal.timeout(8000) });
+    } catch {
+      throw new Error('The Banana puzzle service is unavailable. Retry in a moment, or choose Offline sample mode. No life was lost.');
+    }
     if (!response.ok) throw new Error(`Banana API returned HTTP ${response.status}`);
     const puzzle = await response.json();
     const imageUrl = puzzle.question;
