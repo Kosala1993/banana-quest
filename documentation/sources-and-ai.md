@@ -13,3 +13,7 @@
 GitHub Copilot assisted with code and documentation generation in this project. The student should read, test, adapt, and be able to explain the final implementation, follow the university's AI-use and citation policy, and declare assistance in the format required by the tutor. AI output is not proof of correctness or security. Test results in `testing.md` must be actual results from the submitted checkout.
 
 No external artwork was copied into the game. The Banana puzzle image is dynamically returned by the external service and is not included in the repository.
+
+## Audio asset credits
+
+See [audio-credits.md](audio-credits.md) for the CC0 audio sources, original filenames, event mappings, missing specialty sounds and verification results.
