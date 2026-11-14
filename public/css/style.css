@@ -184,3 +184,7 @@ input:focus { border-color: var(--leaf); outline: 2px solid rgba(54,119,91,.18);
   .answer-controls { align-items: stretch; }
   .answer-controls .button { padding-inline: 10px; }
 }
+.topbar-controls { display: flex; align-items: center; gap: 12px; }
+.audio-settings { margin: 12px auto; padding: 12px; max-width: 420px; }
+.audio-settings summary { cursor: pointer; }
+.audio-settings label { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; }
