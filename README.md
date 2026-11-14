@@ -23,8 +23,9 @@ For local work, the example session secret works. Before deployment, replace it 
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
-Start the development server and open **http://localhost:3000**:
+Optional audio tuning: add `FREESOUND_API_KEY=your-key-here` to `.env` only if you want to test sound discovery against the Freesound API later. The game currently uses synthesized browser audio during gameplay, so it works without any external key and does not hit Freesound on every event.
 
+Start the development server and open **http://localhost:3000**:
 ```powershell
 npm.cmd run dev
 ```

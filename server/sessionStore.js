@@ -1,5 +1,18 @@
 import session from 'express-session';
 
+const DEFAULT_SESSION_LIFETIME_MS = 1000 * 60 * 60 * 12;
+
+function getSessionExpiryMs(value) {
+  if (value.cookie?.expires) {
+    const expires = new Date(value.cookie.expires).getTime();
+    if (Number.isFinite(expires)) return expires;
+  }
+
+  const maxAge = Number(value.cookie?.maxAge ?? value.cookie?.originalMaxAge ?? DEFAULT_SESSION_LIFETIME_MS);
+  if (Number.isFinite(maxAge) && maxAge > 0) return Date.now() + maxAge;
+  return Date.now() + DEFAULT_SESSION_LIFETIME_MS;
+}
+
 export class SQLiteSessionStore extends session.Store {
   constructor(db) {
     super();
@@ -19,7 +32,7 @@ export class SQLiteSessionStore extends session.Store {
 
   set(sid, value, callback = () => {}) {
     try {
-      const expires = value.cookie?.expires ? new Date(value.cookie.expires).getTime() : Date.now() + 86400000;
+      const expires = getSessionExpiryMs(value);
       this.setStatement.run(sid, JSON.stringify(value), expires);
       callback(null);
     } catch (error) { callback(error); }
